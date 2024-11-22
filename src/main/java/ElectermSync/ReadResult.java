@@ -1,4 +1,4 @@
-package main.java.ElectermSync;
+package ElectermSync;
 
 public class ReadResult {
     public final String fileData;

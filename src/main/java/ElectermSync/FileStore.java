@@ -1,12 +1,12 @@
 
-package main.java.ElectermSync;
+package ElectermSync;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.io.IOException;
-import java.io.File;
-import java.util.Map;
-import java.util.HashMap;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class FileStore {
 

@@ -29,3 +29,5 @@ build
 .vscode
 /.json
 !gradle/wrapper/gradle-wrapper.jar
+
+.idea

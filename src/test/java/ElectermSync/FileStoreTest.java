@@ -1,21 +1,18 @@
 package test.java.ElectermSync;
 
+import ElectermSync.Config;
+import ElectermSync.FileStore;
+import ElectermSync.ReadResult;
+import ElectermSync.WriteResult;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import main.java.ElectermSync.Config;
-import main.java.ElectermSync.FileStore;
-import main.java.ElectermSync.ReadResult;
-import main.java.ElectermSync.WriteResult;
-
-import java.nio.file.Path;
-import java.nio.file.Files;
 import java.io.IOException;
-import java.util.Map;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FileStoreTest {
     private final Config dotenv = new Config();

@@ -1,12 +1,16 @@
-package main.java.ElectermSync;
-import static spark.Spark.*;
-import io.jsonwebtoken.*;
+package ElectermSync;
+
 import com.google.gson.Gson;
-import java.util.Map;
-import java.io.File;
-import java.util.Arrays;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Base64;
+
+import static spark.Spark.*;
 
 public class App {
 

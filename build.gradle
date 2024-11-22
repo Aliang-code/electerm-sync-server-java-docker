@@ -28,7 +28,7 @@ dependencies {
 }
 
 application {
-    mainClass.set('main.java.ElectermSync.App')
+    mainClass.set('ElectermSync.App')
 }
 
 // sourceSets {
