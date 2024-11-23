@@ -5,6 +5,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -13,6 +15,7 @@ import java.util.Base64;
 import static spark.Spark.*;
 
 public class App {
+    private static final Logger log = LoggerFactory.getLogger(App.class);
 
     public static void main(String[] args) {
         Gson gson = new Gson();
@@ -21,7 +24,7 @@ public class App {
         Config dotenv = new Config();
         String secretOri = dotenv.getValue("JWT_SECRET");
         byte[] bytesToEncode = secretOri.getBytes(StandardCharsets.UTF_8);
-        
+
         // Encode the bytes using Base64
         String secret = Base64.getEncoder().encodeToString(bytesToEncode);
 
@@ -36,20 +39,20 @@ public class App {
         before("/api/sync", (request, response) -> {
             String authHeader = request.headers("Authorization");
             try {
-              if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                throw new JwtException("Missing or invalid token");
-              } else {
-                  String token = authHeader.substring(7);
-                  Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(secret).build().parseClaimsJws(token);
-                  String id = claimsJws.getBody().get("id").toString();
-                  boolean found = Arrays.stream(idArrStrings).anyMatch(element -> element.equals(id));
-                  if (!found) {
-                      throw new JwtException("Unauthorized access");
-                  }
-                  request.attribute("jwtId", id);
-              }
+                if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                    throw new JwtException("Missing or invalid token");
+                } else {
+                    String token = authHeader.substring(7);
+                    Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(secret).build().parseClaimsJws(token);
+                    String id = claimsJws.getBody().get("id").toString();
+                    boolean found = Arrays.stream(idArrStrings).anyMatch(element -> element.equals(id));
+                    if (!found) {
+                        throw new JwtException("Unauthorized access");
+                    }
+                    request.attribute("jwtId", id);
+                }
             } catch (JwtException ex) {
-              halt(401, "Unauthorized: " + ex.getMessage());
+                halt(401, "Unauthorized: " + ex.getMessage());
             }
         });
 
@@ -70,10 +73,11 @@ public class App {
             response.status(r.statusCode);
             return r.message;
         });
-        
+
         after((request, response) -> {
             response.type("application/json");
             response.header("Content-Encoding", "gzip");
+            log.info(String.format("%s[%s] - [%s]", request.requestMethod(), request.url(), response.status()));
         });
     }
 }
