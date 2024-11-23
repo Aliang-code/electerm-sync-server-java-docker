@@ -1,31 +1,27 @@
 # 使用官方的 OpenJDK 基础镜像
 FROM openjdk:17-jdk-slim AS build
+ARG APPNAME=electerm-sync-server
 
 # 复制源代码
-COPY . /app
+COPY . /${APPNAME}
 # 设置工作目录
-WORKDIR /app
+WORKDIR /${APPNAME}
 
 # 构建应用程序
 RUN ./gradlew build
-RUN pwd && ls -l ./build
+RUN pwd && ls -l ./build/distributions
+RUN apt-get update && apt-get install -y unzip
+RUN unzip ./build/distributions/${APPNAME}.zip -d /dist
 
 #缩减镜像
 FROM openjdk:17-jdk-slim AS runtime
+ARG APPNAME=electerm-sync-server
 WORKDIR /app
 
-# Install dotenvx
-RUN apt-get update && apt-get install -y curl
-RUN curl -fsS https://dotenvx.sh/ | sh
-
-RUN pwd && ls -l
-# 将构建的 JAR 文件复制到镜像中
-COPY --from=build /app/build/distributions/electerm-sync-server-java.zip ./
-RUN unzip electerm-sync-server-java.zip
-COPY sample.env /app/bin/.env
-
-# 设置环境变量
-ENV PATH=$PATH:/app/bin
+# 将构建的文件复制到镜像中
+COPY --from=build /dist/${APPNAME} .
+COPY sample.env .env
+RUN pwd && ls -la
 
 # 运行应用程序
-CMD ["dotenvx", "run", "--", "sh", "electerm-sync-server-java"]
+CMD ["sh", "/app/bin/electerm-sync-server"]

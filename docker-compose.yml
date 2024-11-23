@@ -1,0 +1,13 @@
+version: '3'
+services:
+  electerm-sync-server:
+    restart: on-failure
+    image: aliangbaby/electerm-sync-server-java
+    ports:
+      - 47837:7837
+    volumes:
+      - /path/for/config:/app/config
+    environment:
+      # must set your owner : openssl rand -base64 32
+      - JWT_SECRET=ChangeIt
+      - JWT_USERS=username
